@@ -1,11 +1,20 @@
 name: Deploy site to GitHub Pages
 
-# 把 site/ 目录作为静态站点发布到 GitHub Pages。
-# 前置设置：仓库 Settings → Pages → Build and deployment → Source 选择 "GitHub Actions"。
+# 说明：本仓库的 Pages 目前使用「分支部署」（Settings → Pages → Source = Deploy from a
+# branch，分支 main / 目录 /），由根目录 index.html 跳转到 site/index.html，不依赖本工作流。
+#
+# 之所以改用分支部署：当前账号的 GitHub Actions 无法运行——运行会在数秒内失败、0 个步骤、
+# 无日志（同账号另一个仓库的 has_actions 同样为 off）。因此本工作流暂时只保留手动触发，
+# 避免每次推送都在仓库里留下失败的运行记录。
+#
+# 若日后 Actions 恢复可用，可切回工作流部署：
+#   1) 把下面 push 触发器取消注释；
+#   2) Settings → Pages → Source 改为 "GitHub Actions"。
+# 工作流会把 site/ 目录作为 Pages 产物发布，根目录的 index.html 跳转页那时就不需要了。
 
 on:
-  push:
-    branches: [main]
+  # push:
+  #   branches: [main]
   workflow_dispatch:
 
 permissions:

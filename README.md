@@ -6,7 +6,8 @@
 
 ## 在线预览
 
-- 站点：见仓库的 **GitHub Pages** 地址（或另行发布的托管链接）
+- **GitHub Pages**：https://thehoppsrock.github.io/wastewater-process-kb/
+  - 根路径会自动跳转到站点首页；直达地址是 https://thehoppsrock.github.io/wastewater-process-kb/site/index.html
 - 站点为纯静态页面，**数据已内嵌为 JS，可完全离线运行**——直接双击 `site/index.html` 即可打开，无需服务器、无需联网。
 
 ## 站点特性
@@ -63,6 +64,17 @@ python3 build_kb.py                # 同步到 Markdown（生成 kb/processes/*.
 ```
 
 新增大类或变种时，除上述两步外还需同步三处计数基准：`kb/README.md`（总览 / 分类树 / 按族汇总）、`README-使用说明.md`（数据规模）、`site/js/app.js` 顶部的 `EXPECTED` 常量。完整清单见 `kb/README.md` 的「使用说明」。
+
+## 部署说明
+
+仓库根目录的 `index.html` 是一个跳转页，指向 `site/index.html`；`.nojekyll` 用于跳过 Jekyll 处理。**GitHub Pages 使用「分支部署」**：
+
+- Settings → Pages → Build and deployment → Source = **Deploy from a branch**
+- 分支选 `main`，目录选 `/`（根目录）
+
+也就是说，**站点内容跟随 `main` 分支自动发布，不依赖 GitHub Actions**。修改站点后只需 push 到 `main` 即可。
+
+> 为什么不走 Actions：本账号当前无法运行 GitHub Actions——工作流会在数秒内失败、0 个步骤、无日志。仓库里保留了 `.github/workflows/pages.yml`（仅手动触发）作为备选方案；若 Actions 恢复可用，可按该文件顶部注释切回工作流部署。
 
 ## 数据规模
 
