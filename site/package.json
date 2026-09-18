@@ -1,0 +1,7 @@
+{
+  "name": "sludge-tech-database-2077",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js"
+  }
+}
