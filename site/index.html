@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>污泥处理工艺知识库 SLUDGE-TECH DATABASE // 2077</title>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/intro.css">
 </head>
 <body>
 
@@ -31,6 +32,7 @@
 <nav class="tabs" role="tablist">
   <button class="tab active" id="tabPeriodic" role="tab" aria-selected="true" data-view="periodic">周期表 <span class="tab-en">PERIODIC</span></button>
   <button class="tab" id="tabFormulas" role="tab" aria-selected="false" data-view="formulas">公式手册 <span class="tab-en">FORMULAS</span></button>
+  <button class="tab" id="tabCalculator" role="tab" aria-selected="false" data-view="calculator">建一座水质净化厂 <span class="tab-en">PLANT BUILDER</span></button>
 </nav>
 
 <main id="main">
@@ -50,6 +52,10 @@
       <div id="flist"><!-- 公式列表 --></div>
     </div>
   </section>
+
+  <section id="viewCalculator" class="view" aria-label="建一座水质净化厂">
+    <div id="plantCalculator"><!-- JS 渲染 --></div>
+  </section>
 </main>
 
 <!-- 二级 drawer：大类 / 变种列表 -->
@@ -65,6 +71,10 @@
 
 <script src="data/processes.js"></script>
 <script src="data/formulas.js"></script>
+<script src="js/mathrender.js"></script>
 <script src="js/app.js"></script>
+<script src="js/calculator.js"></script>
+<script src="js/intro.js" defer></script>
+<script src="js/ambient.js" defer></script>
 </body>
 </html>
