@@ -157,8 +157,8 @@
     }
     // 校验
     console.log('[校验] 渲染卡片数 = ' + rendered + ' / categories.length = ' + cats.length +
-      (rendered === cats.length ? ' ✔ 一致' : ' ✘ 不一致') +
-      '，期望 ' + EXPECTED.cats + (cats.length === EXPECTED.cats ? ' ✔' : ' ✘'));
+      ' / 期望 ' + EXPECTED.cats +
+      (rendered === cats.length && cats.length === EXPECTED.cats ? ' ✔ 一致' : ' ✘ 不一致'));
     console.log('[校验] 变种总数 = ' + totalVariants + '（期望 ' + EXPECTED.variants + '）' +
       (totalVariants === EXPECTED.variants ? ' ✔' : ' ✘'));
     console.log('[校验] 公式条目数 = ' + totalFormulas + '（formulas.json 实际值）');
@@ -218,6 +218,7 @@
       });
       $('#viewPeriodic').classList.toggle('active', tab.dataset.view === 'periodic');
       $('#viewFormulas').classList.toggle('active', tab.dataset.view === 'formulas');
+      $('#viewCalculator').classList.toggle('active', tab.dataset.view === 'calculator');
     });
   });
 
@@ -450,14 +451,17 @@
       shown++;
       const card = document.createElement('article');
       card.className = 'formula-card';
+      card.id = 'formula-' + f.code.replace(/[^A-Za-z0-9_-]/g, '-');
+      card.dataset.code = f.code;
       card.innerHTML =
         '<div class="f-head"><span class="f-code">' + esc(f.code) + '</span>' +
           '<span class="f-name">' + esc(f.name) + '</span></div>' +
-        '<div class="f-expr"><span class="f-expr-tag">公式</span>' + esc(f.expr) + '</div>' +
+        '<div class="f-expr"><span class="f-expr-tag">公式</span>' +
+          '<div class="f-expr-body">' + window.MathRender.renderLines(f.expr) + '</div></div>' +
         (f.symbols && f.symbols.length ?
           '<table class="f-symbols"><thead><tr><th>符号</th><th>含义</th><th>单位</th></tr></thead>' +
           '<tbody>' + f.symbols.map((s) =>
-            '<tr><td>' + esc(s.s) + '</td><td>' + esc(s.d) + '</td><td>' + esc(s.u) + '</td></tr>'
+            '<tr><td>' + window.MathRender.render(s.s) + '</td><td>' + esc(s.d) + '</td><td>' + esc(s.u) + '</td></tr>'
           ).join('') + '</tbody></table>' : '') +
         '<dl class="f-extra">' +
           (f.range ? '<dt>取值范围</dt><dd>' + esc(f.range) + '</dd>' : '') +
@@ -473,13 +477,33 @@
   renderChapters();
   renderFormulas('');
 
+  window.SludgeTech = Object.freeze({
+    openFormula(code) {
+      const chapterIndex = FORM.chapters.findIndex((ch) => ch.formulas.some((f) => f.code === code));
+      if (chapterIndex < 0) return false;
+      activeCh = chapterIndex;
+      $('#formulaSearch').value = '';
+      $('#tabFormulas').click();
+      renderChapters();
+      renderFormulas('');
+      const target = document.getElementById('formula-' + code.replace(/[^A-Za-z0-9_-]/g, '-'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        target.classList.add('f-highlight');
+        setTimeout(() => target.classList.remove('f-highlight'), 2400);
+      }
+      return true;
+    },
+  });
+
   console.log('[SLUDGE-TECH] 初始化完成 · eras=' + eras.length + ' fams=' + fams.length);
 
-  /* ---------- 深链：#view=formulas / #cat=<id> / #var=<catId>:<varId> ---------- */
+  /* ---------- 深链：#view=formulas / #view=calculator / #cat=<id> / #var=<catId>:<varId> ---------- */
   (function deepLink() {
     const h = location.hash || '';
     const mView = h.match(/view=formulas/);
     if (mView) $('#tabFormulas').click();
+    if (/view=calculator/.test(h)) $('#tabCalculator').click();
     const mCat = h.match(/cat=([A-Za-z0-9-]+)/);
     const mVar = h.match(/var=([A-Za-z0-9-]+):([A-Za-z0-9-]+)/);
     if (mCat) {
